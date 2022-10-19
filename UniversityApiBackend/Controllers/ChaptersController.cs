@@ -28,6 +28,13 @@ namespace UniversityApiBackend.Controllers
             return await _context.Chapters.ToListAsync();
         }
 
+        [HttpGet]
+        [Route("FilterByCourse")]
+        public async Task<ActionResult<IEnumerable<Chapter>>> GetChaptersByCourseId(int idCourse)
+        {
+            return await _context.Chapters.Where(p => p.CourseId == idCourse).ToListAsync();
+        }
+
         // GET: api/Chapters/5
         [HttpGet("{id}")]
         public async Task<ActionResult<Chapter>> GetChapter(int id)

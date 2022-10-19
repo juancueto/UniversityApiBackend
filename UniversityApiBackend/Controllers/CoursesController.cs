@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -26,6 +27,27 @@ namespace UniversityApiBackend.Controllers
         public async Task<ActionResult<IEnumerable<Course>>> GetCourses()
         {
             return await _context.Courses.ToListAsync();
+        }
+
+        [HttpGet]
+        [Route("FilterByCategory")]
+        public async Task<ActionResult<IEnumerable<Course>>> GetCoursesByCategory(int idCategory)
+        {
+            return await _context.Courses.Where(p => p.Categories.Any(q => q.Id == idCategory)).ToListAsync();
+        }
+
+        [HttpGet]
+        [Route("FilterByStudent")]
+        public async Task<ActionResult<IEnumerable<Course>>> GetCoursesByStudent(int idStudent)
+        {
+            return await _context.Courses.Where(p => p.Students.Any(q => q.Id == idStudent)).ToListAsync();
+        }
+
+        [HttpGet]
+        [Route("WithoutChapter")]
+        public async Task<ActionResult<IEnumerable<Course>>> GetCoursesWithoutChapter(int idCategory)
+        {
+            return await _context.Courses.Where(p => p.Chapter == null).ToListAsync();
         }
 
         // GET: api/Courses/5
@@ -78,10 +100,18 @@ namespace UniversityApiBackend.Controllers
         [HttpPost]
         public async Task<ActionResult<Course>> PostCourse(Course course)
         {
-            _context.Courses.Add(course);
-            await _context.SaveChangesAsync();
+            try
+            {
+                _context.Courses.Add(course);
 
-            return CreatedAtAction("GetCourse", new { id = course.Id }, course);
+                await _context.SaveChangesAsync();
+
+                return CreatedAtAction("GetCourse", new { id = course.Id }, course);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
         }
 
         // DELETE: api/Courses/5

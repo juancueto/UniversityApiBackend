@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using UniversityApiBackend.DataAccess;
 using UniversityApiBackend.Models.DataModels;
+using UniversityApiBackend.Services;
 
 namespace UniversityApiBackend.Controllers
 {
@@ -15,10 +16,13 @@ namespace UniversityApiBackend.Controllers
     public class StudentsController : ControllerBase
     {
         private readonly UniversityDBContext _context;
+        // service
+        private readonly IStudentsService _studentsService;
 
-        public StudentsController(UniversityDBContext context)
+        public StudentsController(UniversityDBContext context, IStudentsService studentsService)
         {
             _context = context;
+            _studentsService = studentsService;
         }
 
         // GET: api/Students
@@ -26,6 +30,20 @@ namespace UniversityApiBackend.Controllers
         public async Task<ActionResult<IEnumerable<Student>>> GetStudents()
         {
             return await _context.Students.ToListAsync();
+        }
+
+        [HttpGet]
+        [Route("WithoutCourses")]
+        public async Task<ActionResult<IEnumerable<Student>>> GetStudentsWithoutCourses()
+        {
+            return await _context.Students.Where(p => p.Courses.Count == 0).ToListAsync();
+        }
+
+        [HttpGet]
+        [Route("FilterByCourse")]
+        public async Task<ActionResult<IEnumerable<Student>>> GetStudentsByCourseId(int idCourse)
+        {
+            return await _context.Students.Where(p => p.Courses.Any(q => q.Id == idCourse)).ToListAsync();
         }
 
         // GET: api/Students/5
