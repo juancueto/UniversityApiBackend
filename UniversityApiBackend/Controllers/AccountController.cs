@@ -2,6 +2,8 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using UniversityApiBackend.DataAccess;
 using UniversityApiBackend.Helpers;
 using UniversityApiBackend.Models.DataModels;
 
@@ -11,46 +13,59 @@ namespace UniversityApiBackend.Controllers
     [ApiController]
     public class AccountController : ControllerBase
     {
+        private readonly UniversityDBContext _context;
+
+
         private readonly JwtSettings _jwtSettings;
 
-        public AccountController(JwtSettings jwtSettings)
+        public AccountController(JwtSettings jwtSettings, UniversityDBContext context)
         {
+            _context = context;
             _jwtSettings = jwtSettings;
         }
 
-        public IEnumerable<User> Logins = new List<User>() {
-            new User(){
-                Id = 1,
-                Email = "admin@mail.com",
-                Name = "Admin",
-                Password = "Password"
-            },
-            new User(){
-                Id = 1,
-                Email = "user1@mail.com",
-                Name = "User1",
-                Password = "Juan"
-            }
-        };
+        //public IEnumerable<User> Logins = new List<User>() {
+        //    new User(){
+        //        Id = 1,
+        //        Email = "admin@mail.com",
+        //        Name = "Admin",
+        //        Password = "Password"
+        //    },
+        //    new User(){
+        //        Id = 1,
+        //        Email = "user1@mail.com",
+        //        Name = "User1",
+        //        Password = "Juan"
+        //    }
+        //};
 
         [HttpPost]
-        public IActionResult GetToken(UserLogins userLogin)
+        public async Task<IActionResult> GetToken(UserLogins userLogin)
         {
             try
             {
                 var token = new UserTokens();
-                var valid = Logins.Any(user => user.Name.Equals(userLogin.UserName, StringComparison.OrdinalIgnoreCase));
+                
+                var user = await _context.Users
+                    .Include(p => p.Roles)
+                    .FirstOrDefaultAsync(user =>
+                        user.Name == userLogin.UserName
+                        );
+
+                var valid = user.Password == userLogin.Password;
+                //var valid = Logins.Any(user => user.Name.Equals(userLogin.UserName, StringComparison.OrdinalIgnoreCase));
 
                 if (valid)
-                {
-                    var user = Logins.FirstOrDefault(user => user.Name.Equals(userLogin.UserName, StringComparison.OrdinalIgnoreCase));
+                {                    
+                    //var user = Logins.FirstOrDefault(user => user.Name.Equals(userLogin.UserName, StringComparison.OrdinalIgnoreCase));
 
                     token = JwtHelpers.GetTokenKey(new UserTokens()
                     {
                         UserName = user.Name,
                         EmailId = user.Email,
                         Id = user.Id,
-                        GuidId = Guid.NewGuid()
+                        GuidId = Guid.NewGuid(),
+                        Roles = user.Roles.Select(p => p.Name).ToArray()
                     }, _jwtSettings);
                 }
                 else {
@@ -65,8 +80,9 @@ namespace UniversityApiBackend.Controllers
 
         [HttpGet]
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Administrator")]
-        public IActionResult GetUserList() 
+        public async Task<IActionResult> GetUserList() 
         {
+            var Logins = await _context.Users.ToListAsync();
             return Ok(Logins);
         }
     }

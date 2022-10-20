@@ -20,5 +20,6 @@ namespace UniversityApiBackend.DataAccess
         public DbSet<Category>? Categories { get; set; }
         public DbSet<Student>? Students { get; set; }
         public DbSet<Chapter>? Chapters { get; set; }
+        public DbSet<Role> Roles { get; set; }
     }
 }

@@ -2,7 +2,7 @@
 {
     public class JwtSettings
     {
-        public bool? ValidateIssuerSigningkey { get; set; }
+        public bool ValidateIssuerSigningkey { get; set; } = true;
         public string IssuerSigningkey { get; set; } = string.Empty;
         public bool ValidateIssuer { get; set; } = true;
         public string? ValidIssuer { get; set; }

@@ -18,14 +18,19 @@ namespace UniversityApiBackend.Helpers
                 new Claim(ClaimTypes.Expiration, DateTime.UtcNow.AddDays(1).ToString("MMM ddd dd yyyy HH:mm:ss tt"))
             };
 
-            if (userAccounts.UserName == "Admin")
+            foreach (var role in userAccounts.Roles)
             {
-                claims.Add(new Claim(ClaimTypes.Role, "Administrator"));
-            }
-            else {
-                claims.Add(new Claim(ClaimTypes.Role, "User"));
-                claims.Add(new Claim("UserOnly", "User 1"));
-            }
+                claims.Add(new Claim(ClaimTypes.Role, role));
+            } 
+
+            //if (userAccounts.UserName == "Admin")
+            //{
+            //    claims.Add(new Claim(ClaimTypes.Role, "Administrator"));
+            //}
+            //else {
+            //    claims.Add(new Claim(ClaimTypes.Role, "User"));
+            //    claims.Add(new Claim("UserOnly", "User 1"));
+            //}
 
             return claims;
         }
@@ -71,6 +76,7 @@ namespace UniversityApiBackend.Helpers
                 userToken.UserName = model.UserName;
                 userToken.Id = model.Id;
                 userToken.GuidId = Id;
+                userToken.Roles = model.Roles;
                 return userToken;
             }
             catch (Exception ex) 
