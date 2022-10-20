@@ -17,6 +17,9 @@ builder.Services.AddDbContext<UniversityDBContext>(options =>
     options.UseSqlServer(connectionString)
 );
 
+// 7. Add Service of JWT Authorization
+//builder.Services.AddJwtTokenServices(builder.Configuration);
+
 builder.Services.AddControllers();
 
 // 4. Add Custom Services (folder services)
