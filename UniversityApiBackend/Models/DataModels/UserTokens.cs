@@ -11,5 +11,6 @@
         public Guid GuidId { get; set; }
         public DateTime ExpiredTime { get; set; }
         public string[] Roles { get; set; }
+        public string Greetings { get; set; }
     }
 }

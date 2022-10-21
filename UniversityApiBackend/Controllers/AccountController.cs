@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Localization;
 using UniversityApiBackend.DataAccess;
 using UniversityApiBackend.Helpers;
 using UniversityApiBackend.Models.DataModels;
@@ -13,15 +14,18 @@ namespace UniversityApiBackend.Controllers
     [ApiController]
     public class AccountController : ControllerBase
     {
+        private readonly IStringLocalizer<AccountController> _stringLocalizer;
+
         private readonly UniversityDBContext _context;
 
 
         private readonly JwtSettings _jwtSettings;
 
-        public AccountController(JwtSettings jwtSettings, UniversityDBContext context)
+        public AccountController(JwtSettings jwtSettings, UniversityDBContext context, IStringLocalizer<AccountController> stringLocalizer)
         {
             _context = context;
             _jwtSettings = jwtSettings;
+            _stringLocalizer = stringLocalizer;
         }
 
         //public IEnumerable<User> Logins = new List<User>() {
@@ -36,7 +40,7 @@ namespace UniversityApiBackend.Controllers
         //        Email = "user1@mail.com",
         //        Name = "User1",
         //        Password = "Juan"
-        //    }
+        //    }           
         //};
 
         [HttpPost]
@@ -56,8 +60,9 @@ namespace UniversityApiBackend.Controllers
                 //var valid = Logins.Any(user => user.Name.Equals(userLogin.UserName, StringComparison.OrdinalIgnoreCase));
 
                 if (valid)
-                {                    
+                {
                     //var user = Logins.FirstOrDefault(user => user.Name.Equals(userLogin.UserName, StringComparison.OrdinalIgnoreCase));
+                    var greetings = _stringLocalizer["Greetings"];
 
                     token = JwtHelpers.GetTokenKey(new UserTokens()
                     {
@@ -65,7 +70,8 @@ namespace UniversityApiBackend.Controllers
                         EmailId = user.Email,
                         Id = user.Id,
                         GuidId = Guid.NewGuid(),
-                        Roles = user.Roles.Select(p => p.Name).ToArray()
+                        Roles = user.Roles.Select(p => p.Name).ToArray(),
+                        Greetings = $"{greetings} {user.Name}",
                     }, _jwtSettings);
                 }
                 else {

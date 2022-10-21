@@ -12,6 +12,10 @@ const string connectionName = "UniversityDb";
 var connectionString = builder.Configuration.GetConnectionString(connectionName);
 
 // Add services to the container.
+// 10. Localization
+builder.Services.AddLocalization(options => {
+    options.ResourcesPath = "Resources";
+});
 
 // 3. Add Context to Services of Builder
 builder.Services.AddDbContext<UniversityDBContext>(options =>
@@ -73,6 +77,14 @@ builder.Services.AddCors(options =>
 });
 
 var app = builder.Build();
+
+var supportedCultures = new[] { "en-US", "es-PE", "fr-FR", "de-DE" };
+var localizationOptions = new RequestLocalizationOptions()
+    .SetDefaultCulture("en-US")
+    .AddSupportedCultures(supportedCultures)
+    .AddSupportedUICultures(supportedCultures);
+
+app.UseRequestLocalization(localizationOptions);
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())

@@ -77,6 +77,7 @@ namespace UniversityApiBackend.Helpers
                 userToken.Id = model.Id;
                 userToken.GuidId = Id;
                 userToken.Roles = model.Roles;
+                userToken.Greetings = model.Greetings;
                 return userToken;
             }
             catch (Exception ex) 
