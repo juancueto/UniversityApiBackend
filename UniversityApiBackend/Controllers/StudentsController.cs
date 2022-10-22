@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -36,21 +37,36 @@ namespace UniversityApiBackend.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Student>>> GetStudents()
         {
-            return await _context.Students.ToListAsync();
+            Stopwatch stopwatch = new Stopwatch();
+            stopwatch.Start();
+            var students = await _context.Students.ToListAsync();
+            stopwatch.Stop();
+            Console.WriteLine($"Execution time: {stopwatch.Elapsed}");
+            return students;
         }
 
         [HttpGet]
         [Route("WithoutCourses")]
         public async Task<ActionResult<IEnumerable<Student>>> GetStudentsWithoutCourses()
         {
-            return await _context.Students.Where(p => p.Courses.Count == 0).ToListAsync();
+            Stopwatch stopwatch = new Stopwatch();
+            stopwatch.Start();
+            var students = await _context.Students.Where(p => p.Courses.Count == 0).ToListAsync();
+            stopwatch.Stop();
+            Console.WriteLine($"Execution time: {stopwatch.Elapsed}");
+            return students;
         }
 
         [HttpGet]
         [Route("FilterByCourse")]
         public async Task<ActionResult<IEnumerable<Student>>> GetStudentsByCourseId(int idCourse)
         {
-            return await _context.Students.Where(p => p.Courses.Any(q => q.Id == idCourse)).ToListAsync();
+            Stopwatch stopwatch = new Stopwatch();
+            stopwatch.Start();
+            var students = await _context.Students.Where(p => p.Courses.Any(q => q.Id == idCourse)).ToListAsync();
+            stopwatch.Stop();
+            Console.WriteLine($"Execution time: {stopwatch.Elapsed}");
+            return students;
         }
 
         // GET: api/Students/5
