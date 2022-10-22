@@ -20,9 +20,13 @@ namespace UniversityApiBackend.Controllers
     {
         private readonly UniversityDBContext _context;
 
-        public CoursesController(UniversityDBContext context)
+        private readonly ILogger<CoursesController> _logger;
+
+        public CoursesController(UniversityDBContext context,
+            ILogger<CoursesController> logger)
         {
             _context = context;
+            _logger = logger;
         }
 
         // GET: api/Courses

@@ -19,9 +19,13 @@ namespace UniversityApiBackend.Controllers
     {
         private readonly UniversityDBContext _context;
 
-        public CategoriesController(UniversityDBContext context)
+        private readonly ILogger<CategoriesController> _logger;
+
+        public CategoriesController(UniversityDBContext context,
+            ILogger<CategoriesController> logger)
         {
             _context = context;
+            _logger = logger;
         }
 
         // GET: api/Categories

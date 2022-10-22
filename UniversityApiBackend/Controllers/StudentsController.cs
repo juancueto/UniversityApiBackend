@@ -22,9 +22,13 @@ namespace UniversityApiBackend.Controllers
         // service
         private readonly IStudentsService _studentsService;
 
-        public StudentsController(UniversityDBContext context, IStudentsService studentsService)
+        private readonly ILogger<StudentsController> _logger;
+
+        public StudentsController(UniversityDBContext context, IStudentsService studentsService,
+            ILogger<StudentsController> logger)
         {
             _context = context;
+            _logger = logger;
             _studentsService = studentsService;
         }
 

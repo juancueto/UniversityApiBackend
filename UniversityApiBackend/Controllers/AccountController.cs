@@ -18,14 +18,19 @@ namespace UniversityApiBackend.Controllers
 
         private readonly UniversityDBContext _context;
 
+        private readonly ILogger<AccountController> _logger;
 
         private readonly JwtSettings _jwtSettings;
 
-        public AccountController(JwtSettings jwtSettings, UniversityDBContext context, IStringLocalizer<AccountController> stringLocalizer)
+        public AccountController(JwtSettings jwtSettings, 
+            UniversityDBContext context, 
+            IStringLocalizer<AccountController> stringLocalizer,
+            ILogger<AccountController> logger)
         {
             _context = context;
             _jwtSettings = jwtSettings;
             _stringLocalizer = stringLocalizer;
+            _logger = logger;
         }
 
         //public IEnumerable<User> Logins = new List<User>() {

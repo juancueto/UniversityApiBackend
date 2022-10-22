@@ -25,6 +25,13 @@ namespace UniversityApiBackend.Controllers
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Administrator, User")]
         public IEnumerable<WeatherForecast> Get()
         {
+            _logger.LogTrace($"{nameof(WeatherForecastController)} - {nameof(Get)} - Trace Level Log");
+            _logger.LogDebug("Debug Level Log");
+            _logger.LogInformation("Information Level Log");
+            _logger.LogWarning("Warning Level Log");
+            _logger.LogError("Error Level Log");
+            _logger.LogCritical("Critical Level Log");
+
             return Enumerable.Range(1, 5).Select(index => new WeatherForecast
             {
                 Date = DateTime.Now.AddDays(index),
